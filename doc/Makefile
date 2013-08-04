@@ -184,6 +184,7 @@ gh-pages:
 	cd doc
 	make html
 	mv _build/html/* ../
+	touch .nojekyll
 	cd ..
 	rm -rf doc pygrid examples
 	git add -A
