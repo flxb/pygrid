@@ -6,7 +6,6 @@
 .. toctree::
    :hidden:
    
-   index
    function_reference
 
 Tutorial
