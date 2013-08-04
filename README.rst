@@ -1,7 +1,7 @@
 PyGrid
 ======
 
-PyGrid provides a map-like interface for job submissions to gridengine clusters. Read the installation instructions and the tutorial in the `documentation<http://flxb.github.io/pygrid>`_.
+PyGrid provides a map-like interface for job submissions to gridengine clusters. Read the installation instructions and the tutorial in the `documentation <http://flxb.github.io/pygrid>`_.
 
 Features
 --------
@@ -9,7 +9,7 @@ Features
 * No dependencies
 * Easy to use: no code rewrite necessary
 * Robust: Interactive interface allows to resubmit single jobs with different resource requests
-* Well documented: `Tutorial<http://flxb.github.io/pygrid>` and `Function reference<http://flxb.github.io/pygrid/function_reference.html>`_
+* Well documented: `Tutorial <http://flxb.github.io/pygrid>`_ and `Function reference <http://flxb.github.io/pygrid/function_reference.html>`_
 
 Example use
 -----------
