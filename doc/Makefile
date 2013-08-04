@@ -180,6 +180,7 @@ gh-pages:
 	P=$(cd ..; pwd)
 	git checkout gh-pages
 	cd $P
+	pwd
 	rm -rf *
 	git checkout master doc pygrid examples
 	cd doc
@@ -189,4 +190,4 @@ gh-pages:
 	cd ..
 	rm -rf doc pygrid examples
 	git add -A
-	git ci -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`" && git push origin gh-pages ; git checkout master
+	git commit -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`" && git push origin gh-pages ; git checkout master
