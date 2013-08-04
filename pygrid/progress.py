@@ -15,6 +15,24 @@ from .run import _submit_jobs
 
 
 def get_progress(temp_folder):
+    """ Returns progress information
+
+    Parameters
+    ----------
+    temp_folder : string
+        The temprary folder that was given when the job was submitted first.
+
+    Returns
+    -------
+    output : dict
+        A dict where the values are the indices of the jobs and the keys are:
+
+        - waiting
+        - running
+        - failed
+        - finished
+        
+    """
     jobs = {}
     jobs['all'] = range(_get_info(temp_folder)['njobs'])
 

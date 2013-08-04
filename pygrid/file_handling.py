@@ -44,9 +44,23 @@ def _create_folder(temp_folder):
 
 
 def delete_folder(temp_folder):
+    """ Deletes a PyGrid folder
+
+    If the folder exists, it must have a ``is_pygrid`` file to avoid accidental
+    deletion of other files.
+
+    Parameters
+    ----------
+    temp_folder : string
+        The temporary folder that was given when the job was submitted first.
+    """
     if os.path.exists(temp_folder):
         if os.path.isdir(temp_folder):
-            shutil.rmtree(temp_folder)
+            if os.path.exists(os.path.join(temp_folder, 'is_pygrid')):
+                shutil.rmtree(temp_folder)
+            else:
+                raise ValueError('`' + temp_folder + '` is not a PyGrid ' +
+                                 'folder.')
         else:
             raise ValueError('`' + temp_folder + '` is not a folder.')
 
@@ -91,6 +105,21 @@ def _write_files(temp_folder, args):
 
 
 def get_results(temp_folder):
+    """ Returns the job results
+
+    Parameters
+    ----------
+    temp_folder : string
+        The temporary folder that was given when the job was submitted first.
+
+    Returns
+    -------
+    output : list
+        A list with the results for each job. Each item in the list corresponds
+        to the item in the ``args`` list from input. If the job failed or was
+        not finished, the value will be None.
+    """
+
     if not os.path.exists(temp_folder):
         return None
 
@@ -120,6 +149,19 @@ def _get_common_args(temp_folder):
 
 
 def get_args(temp_folder):
+    """ Return the original args
+
+    Parameters
+    ----------
+    temp_folder : string
+        The temporary folder that was given when the job was submitted first.
+
+    Returns
+    -------
+    output : list
+        The ``args`` list given when the job was submitted first.
+    """
+
     info = _get_info(temp_folder)
     common_args = _get_common_args(temp_folder)
     args = []
@@ -146,6 +188,18 @@ def _get_qids(temp_folder):
 
 
 def delete_all_folders(root):
+    """ Deletes all PyGrid folders under a given path
+
+    The function walks through the directory structure and identifies all
+    PyGrid folders. It then asks for each one if it should be deleted and then
+    deletes the selected folders.
+
+    Parameters
+    ----------
+    temp_folder : string
+        The temporary folder that was given when the job was submitted first.
+    """
+
     folders = []
     print('Searching for pygrid folders...')
     for folder, dirs, files in os.walk(root):

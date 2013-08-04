@@ -13,7 +13,58 @@ from .run import _submit_jobs, _simulate_jobs
 
 
 def map(function, args, temp_folder='temp_pygrid', use_cluster=True,
-        cluster_params=None, nest=False):
+        cluster_params=None, interactive=False, nest=False):
+    """ Submits jobs to gridengine and returns results
+
+    Parameters
+    ----------
+    function :  callable
+        The function that gets run with different input parameters.
+    args : list
+        A list of dictionaries where each dictionary in the list is for one
+        function call. The dictionary keys must match the function parameters.
+
+        If the function has default parameters, the values do not have to be
+        provided in args. PyGrid will check if any parameter values are the
+        same for all function calls and save them only once.
+
+        If an argument value is a numpy array, saving and loading is efficient
+        (with numpy.savez and numpy.load).
+
+        If the function returns a numpy array or a dict of numpy arrays,
+        saving and loading of return values is efficient, too.
+    temp_folder : string, optional
+        A path to a folder where PyGrid will save the temporary files. PyGrid
+        will ask before overwriting or reusing a folder. The folder is not
+        deleted by default. Default is ``'temp_pygrid'``.
+    use_cluster : bool, optional
+        If set to false, the run will be simulated to make debugging easier.
+        That means that all computations are done in serial in the current
+        session. Default is True.
+    cluster_params : list, optional
+        A list of strings with additional parameters to use when submitting the
+        job. E.g. ``['-l h_vmem=10G']`` to set a limit of 10Gb per job. Default
+        is None.
+    interactive : bool, optional
+        When set to False, there will be no progress information printed and
+        ``None`` will be returned without waiting for results. Default is True.
+    nest : bool, optional
+        Allows to nest PyGrid jobs when set to True. Otherwise an exception is
+        thrown when pygrid.map gets called inside a PyGrid job. Default is
+        False.
+
+    Returns
+    -------
+    results : list
+        A list with the results for each job. Each item in the list corresponds
+        to the item in the ``args`` list from input. If the job failed or was
+        not finished, the value will be None.
+
+    Examples
+    --------
+    See examples directory.
+    """
+
     # test if pygrid map is called inside a pygrid map instance
     if not nest and os.environ.get('PYGRID') == 1:
         raise Exception('PyGrid called itself inside a PyGrid instance. ' +
@@ -67,7 +118,10 @@ def map(function, args, temp_folder='temp_pygrid', use_cluster=True,
             if res is not True:
                 raise Exception('Could not submit job: ' + res)
 
-            _disp_progress(temp_folder)
+            if interactive:
+                _disp_progress(temp_folder)
+            else:
+                return None
         else:
             _simulate_jobs(temp_folder, range(len(args)))
 
@@ -75,6 +129,17 @@ def map(function, args, temp_folder='temp_pygrid', use_cluster=True,
 
 
 def restart(temp_folder, cluster_params=None):
+    """ Restarts all failed jobs.
+    
+    Parameters
+    ----------
+    temp_folder : string
+        The temporary folder that was given when the job was submitted first.
+    cluster_params : list, optional
+        A list of strings with new parameters to use when submitting the
+        job. E.g. ``['-l h_vmem=10G']`` to set a limit of 10Gb per job. Default
+        is None.
+    """
     jobs = get_progress(temp_folder)
     if cluster_params is None:
         params = _get_info(temp_folder)['cluster_params']
