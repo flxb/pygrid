@@ -175,3 +175,16 @@ pseudoxml:
 	$(SPHINXBUILD) -b pseudoxml $(ALLSPHINXOPTS) $(BUILDDIR)/pseudoxml
 	@echo
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
+
+gh-pages:
+	git checkout gh-pages
+	cd ..
+	rm -rf *
+	git checkout master doc pygrid examples
+	cd doc
+	make html
+	mv _build/html/* ../
+	cd ..
+	rm -rf doc pygrid examples
+	git add -A
+	git ci -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`" && git push origin gh-pages ; git checkout master
