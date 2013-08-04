@@ -1,1 +1,285 @@
-First commit
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial &mdash; PyGrid 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PyGrid 1.0.0 documentation" href="#" />
+    <link rel="next" title="Tutorial" href="" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="#" title="Tutorial"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">PyGrid 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="toctree-wrapper compound">
+</div>
+<div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>PyGrid allows to distribute python function calls on a gridengine cluster. This
+document contains installation instructions and a tutorial.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can find all functions and options in the <a class="reference internal" href="function_reference.html"><em>Function reference</em></a>.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>When you work on a cluster where you have no global write permissions:</p>
+<div class="highlight-bash"><div class="highlight"><pre>git clone http://github.com/flxb/pygrid
+<span class="nb">cd </span>pygrid
+python setup.py install --prefix<span class="o">=</span>~/your/local/directory
+<span class="nb">echo</span> <span class="s1">&#39;export PYTHONPATH=~/your/local/directory:$PYTHONPATH&#39;</span> &gt;&gt; ~/.bashrc
+<span class="nb">source</span> ~/.bashrc
+</pre></div>
+</div>
+</div>
+<div class="section" id="simple-example">
+<h2>Simple example<a class="headerlink" href="#simple-example" title="Permalink to this headline">¶</a></h2>
+<p>The simplest example of PyGrid is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pygrid</span>
+
+
+<span class="k">def</span> <span class="nf">example_function</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Running example function with args &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">((</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">arg1</span> <span class="o">+</span> <span class="n">arg2</span> <span class="o">*</span> <span class="n">arg3</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;arg1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;arg2&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+            <span class="p">{</span><span class="s">&#39;arg1&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;arg2&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;arg3&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}]</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="n">pygrid</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">example_function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">temp_folder</span><span class="o">=</span><span class="s">&#39;tmp&#39;</span><span class="p">,</span>
+                         <span class="n">use_cluster</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="n">results</span>  <span class="c"># will print [array(5), array(14)]</span>
+</pre></div>
+</div>
+<p>Here, PyGrid will create a folder <tt class="docutils literal"><span class="pre">tmp</span></tt> and write all arguments and job
+information into that folder. Then it will submit the jobs to the gridengine
+and display a status line much like:</p>
+<div class="highlight-none"><div class="highlight"><pre>2 Jobs: 0 Finished / 0 Running / 0 Failed / 2 in Queue (press ? for help)
+</pre></div>
+</div>
+<p>This will automatically update. When all jobs are finished,
+<a class="reference internal" href="function_reference.html#pygrid.map" title="pygrid.map"><tt class="xref py py-meth docutils literal"><span class="pre">map()</span></tt></a> will return the results.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">You have to include the <tt class="docutils literal"><span class="pre">pygrid.map</span></tt> call in a <tt class="docutils literal"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span>
+<span class="pre">'__main__'</span></tt> construct. PyGrid has to import the file with the function
+definition and would otherwise call itself.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that input and output values are converted to numpy arrays to make
+loading and saving more efficient (by utilizing <tt class="docutils literal"><span class="pre">numpy.save</span></tt> instead of
+<tt class="docutils literal"><span class="pre">pickle.dump</span></tt>).</p>
+</div>
+</div>
+<div class="section" id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<p>Set <tt class="docutils literal"><span class="pre">use_cluster=False</span></tt> to debug your code. PyGrid will not use the
+gridengine and start all jobs in serial, so you can see the debug output.</p>
+<div class="highlight-none"><div class="highlight"><pre>$ python examples/simple.py
+Starting job with id 0 (0/2)
+Running example function with args (array(1), array(2), 2)
+Starting job with id 1 (1/2)
+Running example function with args (array(2), array(3), array(4))
+[array(5), array(14)]
+</pre></div>
+</div>
+</div>
+<div class="section" id="efficient-use">
+<h2>Efficient use<a class="headerlink" href="#efficient-use" title="Permalink to this headline">¶</a></h2>
+<p>To run the jobs in a cluster job, PyGrid needs to save and load the input and
+output parameters. This is done using numpy, which will fall back to pickle.
+Pickle is very slow when saving big data structures, so it is best to avoid
+this. All input parameters have to be given in a dictionary. If the dictionary
+values can be transformed into a numpy array, numpy will be used to save them.
+This means</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># AVOID:</span>
+<span class="n">pygrid</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">big_array1</span><span class="p">,</span> <span class="n">big_array2</span><span class="p">)})</span>
+
+<span class="c"># USE INSTEAD:</span>
+<span class="n">pygrid</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;data1&#39;</span><span class="p">:</span> <span class="n">big_array1</span><span class="p">,</span> <span class="s">&#39;data2&#39;</span><span class="p">:</span> <span class="n">big_array2</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>If the output is one numpy array, it will be save efficiently. If it is a dict
+of numpy arrays (as for inputs) it will be saved efficiently, too. This means</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># AVOID:</span>
+<span class="k">def</span> <span class="nf">example_function</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">big_array1</span><span class="p">,</span> <span class="n">big_array2</span><span class="p">)</span>
+
+ <span class="c"># USE INSTEAD:</span>
+ <span class="k">def</span> <span class="nf">example_function</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">):</span>
+     <span class="o">...</span>
+     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;res1&#39;</span><span class="p">:</span> <span class="n">big_array1</span><span class="p">,</span> <span class="s">&#39;res2&#39;</span><span class="p">:</span> <span class="n">big_array2</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>If one input parameter is the same for all jobs, it will only be saved once.</p>
+</div>
+<div class="section" id="cluster-parameters">
+<h2>Cluster parameters<a class="headerlink" href="#cluster-parameters" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to provide additional parameters to the gridengine. For example,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pygrid</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">cluster_params</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-l h_vmem=10G&#39;</span><span class="p">,</span> <span class="s">&#39;-l h_rt=00:30:00&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>will request a 30min slot with an upper virtual memory limit of 10Gb. See
+<em>Resource Limits</em> section of <a class="reference external" href="http://linux.die.net/man/5/sge_queue_conf">man queue_conf</a>.</p>
+</div>
+<div class="section" id="non-interactive-use">
+<h2>Non-interactive use<a class="headerlink" href="#non-interactive-use" title="Permalink to this headline">¶</a></h2>
+<p>If you do not like the interactive functionality, you can turn it off and
+monitor progress and get results yourself.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pygrid</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<span class="k">def</span> <span class="nf">example_function</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Running example function with args &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">((</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">arg1</span> <span class="o">+</span> <span class="n">arg2</span> <span class="o">*</span> <span class="n">arg3</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;arg1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;arg2&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+            <span class="p">{</span><span class="s">&#39;arg1&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;arg2&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;arg3&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}]</span>
+
+    <span class="n">temp_folder</span> <span class="o">=</span> <span class="s">&#39;tmp&#39;</span>
+
+    <span class="c"># submit jobs</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">pygrid</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">example_function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">temp_folder</span><span class="o">=</span><span class="n">temp_folder</span><span class="p">,</span>
+                         <span class="n">use_cluster</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="c"># wait till all jobs are finished</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">pygrid</span><span class="o">.</span><span class="n">get_progress</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">progress</span><span class="p">[</span><span class="s">&#39;waiting&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">progress</span><span class="p">[</span><span class="s">&#39;running&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="c"># get results</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">pygrid</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="n">results</span>  <span class="c"># will print [array(5), array(14)]</span>
+</pre></div>
+</div>
+<p>Refer to the function reference for <a class="reference internal" href="function_reference.html#pygrid.get_progress" title="pygrid.get_progress"><tt class="xref py py-meth docutils literal"><span class="pre">get_progress()</span></tt></a> and
+<a class="reference internal" href="function_reference.html#pygrid.get_results" title="pygrid.get_results"><tt class="xref py py-meth docutils literal"><span class="pre">get_results()</span></tt></a> for more information. You can use
+<a class="reference internal" href="function_reference.html#pygrid.get_args" title="pygrid.get_args"><tt class="xref py py-meth docutils literal"><span class="pre">get_args()</span></tt></a> to get the <tt class="docutils literal"><span class="pre">args</span></tt> you submitted. If you want to
+restart jobs in non-interactive mode, you can use <a class="reference internal" href="function_reference.html#pygrid.restart" title="pygrid.restart"><tt class="xref py py-meth docutils literal"><span class="pre">restart()</span></tt></a>.</p>
+</div>
+<div class="section" id="deleting-temporary-files">
+<h2>Deleting temporary files<a class="headerlink" href="#deleting-temporary-files" title="Permalink to this headline">¶</a></h2>
+<p>Temporary files are not deleted automatically. If you want to delete one PyGrid
+folder, use <a class="reference internal" href="function_reference.html#pygrid.delete_folder" title="pygrid.delete_folder"><tt class="xref py py-meth docutils literal"><span class="pre">delete_folder()</span></tt></a>. If you want to clean up and
+delete many PyGrid folders under a specific path, you should look at
+<a class="reference internal" href="function_reference.html#pygrid.delete_all_folders" title="pygrid.delete_all_folders"><tt class="xref py py-meth docutils literal"><span class="pre">delete_all_folders()</span></tt></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#simple-example">Simple example</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+<li><a class="reference internal" href="#efficient-use">Efficient use</a></li>
+<li><a class="reference internal" href="#cluster-parameters">Cluster parameters</a></li>
+<li><a class="reference internal" href="#non-interactive-use">Non-interactive use</a></li>
+<li><a class="reference internal" href="#deleting-temporary-files">Deleting temporary files</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href=""
+                        title="next chapter">Tutorial</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="#" title="Tutorial"
+             >next</a> |</li>
+        <li><a href="#">PyGrid 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Felix Brockherde.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

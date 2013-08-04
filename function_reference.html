@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Function reference &mdash; PyGrid 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PyGrid 1.0.0 documentation" href="index.html" />
+    <link rel="prev" title="Function reference" href="" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="#" title="Function reference"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PyGrid 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pygrid">
+<span id="function-reference"></span><h1>Function reference<a class="headerlink" href="#module-pygrid" title="Permalink to this headline">¶</a></h1>
+<p>PyGrid allows to distribute python function calls on a gridengine cluster</p>
+<dl class="function">
+<dt id="pygrid.map">
+<tt class="descclassname">pygrid.</tt><tt class="descname">map</tt><big>(</big><em>function</em>, <em>args</em>, <em>temp_folder='temp_pygrid'</em>, <em>use_cluster=True</em>, <em>cluster_params=None</em>, <em>interactive=False</em>, <em>nest=False</em><big>)</big><a class="headerlink" href="#pygrid.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submits jobs to gridengine and returns results</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>function</strong> :  callable</p>
+<blockquote>
+<div><p>The function that gets run with different input parameters.</p>
+</div></blockquote>
+<p><strong>args</strong> : list</p>
+<blockquote>
+<div><p>A list of dictionaries where each dictionary in the list is for one
+function call. The dictionary keys must match the function parameters.</p>
+<p>If the function has default parameters, the values do not have to be
+provided in args. PyGrid will check if any parameter values are the
+same for all function calls and save them only once.</p>
+<p>If an argument value is a numpy array, saving and loading is efficient
+(with numpy.savez and numpy.load).</p>
+<p>If the function returns a numpy array or a dict of numpy arrays,
+saving and loading of return values is efficient, too.</p>
+</div></blockquote>
+<p><strong>temp_folder</strong> : string, optional</p>
+<blockquote>
+<div><p>A path to a folder where PyGrid will save the temporary files. PyGrid
+will ask before overwriting or reusing a folder. The folder is not
+deleted by default. Default is <tt class="docutils literal"><span class="pre">'temp_pygrid'</span></tt>.</p>
+</div></blockquote>
+<p><strong>use_cluster</strong> : bool, optional</p>
+<blockquote>
+<div><p>If set to false, the run will be simulated to make debugging easier.
+That means that all computations are done in serial in the current
+session. Default is True.</p>
+</div></blockquote>
+<p><strong>cluster_params</strong> : list, optional</p>
+<blockquote>
+<div><p>A list of strings with additional parameters to use when submitting the
+job. E.g. <tt class="docutils literal"><span class="pre">['-l</span> <span class="pre">h_vmem=10G']</span></tt> to set a limit of 10Gb per job. Default
+is None.</p>
+</div></blockquote>
+<p><strong>interactive</strong> : bool, optional</p>
+<blockquote>
+<div><p>When set to False, there will be no progress information printed and
+<tt class="docutils literal"><span class="pre">None</span></tt> will be returned without waiting for results. Default is True.</p>
+</div></blockquote>
+<p><strong>nest</strong> : bool, optional</p>
+<blockquote>
+<div><p>Allows to nest PyGrid jobs when set to True. Otherwise an exception is
+thrown when pygrid.map gets called inside a PyGrid job. Default is
+False.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>results</strong> : list</p>
+<blockquote class="last">
+<div><p>A list with the results for each job. Each item in the list corresponds
+to the item in the <tt class="docutils literal"><span class="pre">args</span></tt> list from input. If the job failed or was
+not finished, the value will be None.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>See examples directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygrid.restart">
+<tt class="descclassname">pygrid.</tt><tt class="descname">restart</tt><big>(</big><em>temp_folder</em>, <em>cluster_params=None</em><big>)</big><a class="headerlink" href="#pygrid.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restarts all failed jobs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>temp_folder</strong> : string</p>
+<blockquote>
+<div><p>The temporary folder that was given when the job was submitted first.</p>
+</div></blockquote>
+<p><strong>cluster_params</strong> : list, optional</p>
+<blockquote class="last">
+<div><p>A list of strings with new parameters to use when submitting the
+job. E.g. <tt class="docutils literal"><span class="pre">['-l</span> <span class="pre">h_vmem=10G']</span></tt> to set a limit of 10Gb per job. Default
+is None.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygrid.delete_folder">
+<tt class="descclassname">pygrid.</tt><tt class="descname">delete_folder</tt><big>(</big><em>temp_folder</em><big>)</big><a class="headerlink" href="#pygrid.delete_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a PyGrid folder</p>
+<p>If the folder exists, it must have a <tt class="docutils literal"><span class="pre">is_pygrid</span></tt> file to avoid accidental
+deletion of other files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>temp_folder</strong> : string</p>
+<blockquote class="last">
+<div><p>The temporary folder that was given when the job was submitted first.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygrid.delete_all_folders">
+<tt class="descclassname">pygrid.</tt><tt class="descname">delete_all_folders</tt><big>(</big><em>root</em><big>)</big><a class="headerlink" href="#pygrid.delete_all_folders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes all PyGrid folders under a given path</p>
+<p>The function walks through the directory structure and identifies all
+PyGrid folders. It then asks for each one if it should be deleted and then
+deletes the selected folders.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>temp_folder</strong> : string</p>
+<blockquote class="last">
+<div><p>The temporary folder that was given when the job was submitted first.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygrid.get_args">
+<tt class="descclassname">pygrid.</tt><tt class="descname">get_args</tt><big>(</big><em>temp_folder</em><big>)</big><a class="headerlink" href="#pygrid.get_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the original args</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>temp_folder</strong> : string</p>
+<blockquote>
+<div><p>The temporary folder that was given when the job was submitted first.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>output</strong> : list</p>
+<blockquote class="last">
+<div><p>The <tt class="docutils literal"><span class="pre">args</span></tt> list given when the job was submitted first.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygrid.get_results">
+<tt class="descclassname">pygrid.</tt><tt class="descname">get_results</tt><big>(</big><em>temp_folder</em><big>)</big><a class="headerlink" href="#pygrid.get_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the job results</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>temp_folder</strong> : string</p>
+<blockquote>
+<div><p>The temporary folder that was given when the job was submitted first.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>output</strong> : list</p>
+<blockquote class="last">
+<div><p>A list with the results for each job. Each item in the list corresponds
+to the item in the <tt class="docutils literal"><span class="pre">args</span></tt> list from input. If the job failed or was
+not finished, the value will be None.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygrid.get_progress">
+<tt class="descclassname">pygrid.</tt><tt class="descname">get_progress</tt><big>(</big><em>temp_folder</em><big>)</big><a class="headerlink" href="#pygrid.get_progress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns progress information</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>temp_folder</strong> : string</p>
+<blockquote>
+<div><p>The temprary folder that was given when the job was submitted first.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>output</strong> : dict</p>
+<blockquote class="last">
+<div><p>A dict where the values are the indices of the jobs and the keys are:</p>
+<ul class="simple">
+<li>waiting</li>
+<li>running</li>
+<li>failed</li>
+<li>finished</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href=""
+                        title="previous chapter">Function reference</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/function_reference.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="#" title="Function reference"
+             >previous</a> |</li>
+        <li><a href="index.html">PyGrid 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Felix Brockherde.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
