@@ -177,8 +177,8 @@ pseudoxml:
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
 
 gh-pages:
-	git checkout gh-pages
 	cd ..
+	git checkout gh-pages
 	rm -rf *
 	git checkout master doc pygrid examples
 	cd doc
