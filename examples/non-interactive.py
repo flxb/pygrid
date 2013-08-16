@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     # submit jobs
     pygrid.map(example_function, args, temp_folder=temp_folder,
-                         use_cluster=True, interactive=False)
+               use_cluster=True, interactive=False)
 
     # wait till all jobs are finished
     while True:
