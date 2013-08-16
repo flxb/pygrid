@@ -13,7 +13,7 @@ if __name__ == '__main__':
     temp_folder = 'tmp'
 
     # submit jobs
-    results = pygrid.map(example_function, args, temp_folder=temp_folder,
+    pygrid.map(example_function, args, temp_folder=temp_folder,
                          use_cluster=True, interactive=False)
 
     # wait till all jobs are finished
