@@ -123,7 +123,7 @@ def _disp_progress(temp_folder):
                         jobs = get_progress(temp_folder)
                         params = cluster_params.split(';')
                         res = _submit_jobs(temp_folder, jobs['failed'], params)
-                        if res is True:
+                        if res is False:
                             extra_lines = ['Could not submit job. Are your ' +
                                            ' `cluster_params` valid?']
                         else:

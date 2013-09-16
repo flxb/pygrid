@@ -13,7 +13,7 @@ from .run import _submit_jobs, _simulate_jobs
 
 
 def map(function, args, temp_folder='temp_pygrid', use_cluster=True,
-        cluster_params=None, interactive=False, nest=False):
+        cluster_params=None, interactive=True, nest=False):
     """ Submits jobs to gridengine and returns results
 
     Parameters
