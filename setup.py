@@ -18,7 +18,7 @@ setup(
     keywords = "gridengine, sungrid, sge, cluster, parallel, distributed",
     url = "http://packages.python.org/pygrid",
     packages=['pygrid'],
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Topic :: System :: Distributed Computing"
