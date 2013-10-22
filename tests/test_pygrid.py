@@ -24,13 +24,14 @@ def run_simple(use_cluster):
     pygrid.delete_folder(temp)
     res = pygrid.map(function=example_function, args=args, temp_folder=temp,
                      use_cluster=use_cluster,
-                     cluster_params=['-l h_vmem=200M'])
+                     cluster_params=['-l h_rt=00:00:30', '-l vf=1.0G',
+                                     '-l h_vmem=1.0G'])
     assert(res[0][0] == args[0]['arg1'] and res[0][1] == args[0]['arg2'] and
            res[1][0] == args[1]['arg1'] and res[1][1] == 10 and res[2] is None)
 
     # test restart
     res = pygrid.map(function=example_function, args=args, temp_folder=temp,
-                     use_cluster=True)
+                     use_cluster=use_cluster)
     assert(res[0][0] == args[0]['arg1'] and res[0][1] == args[0]['arg2'] and
            res[1][0] == args[1]['arg1'] and res[1][1] == 10 and res[2] is None)
 
