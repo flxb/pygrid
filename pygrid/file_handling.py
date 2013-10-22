@@ -88,8 +88,9 @@ def _write_files(temp_folder, args):
         if all(key in arg and id(args[0][key]) == id(arg[key]) for
                 arg in args):
             common_args[key] = args[0][key]
-            for arg in args:
-                del arg[key]
+    for key in common_args:
+        for arg in args:
+            del arg[key]
 
     # write common args
     if len(common_args) > 0:
