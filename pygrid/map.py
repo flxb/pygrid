@@ -74,7 +74,8 @@ def map(function, args, temp_folder='temp_pygrid', use_cluster=True,
     if not hasattr(function, '__call__'):
         raise ValueError('`function` has to be callable.')
     if not os.path.exists(os.path.abspath(inspect.stack()[1][1])):
-        raise Exception('Can not find the file from which `map` was called.')
+        #raise Exception('Can not find the file from which `map` was called.')
+        pass
     if not type(args) == list and all(type(arg) == dict for arg in args):
         raise ValueError('`args` has to be a list of dicts.')
     if cluster_params is None:
@@ -105,11 +106,21 @@ def map(function, args, temp_folder='temp_pygrid', use_cluster=True,
         _create_folder(temp_folder)
         _write_files(temp_folder, args)
         function_name = function.__name__
-        module = function.__module__
         call_file = os.path.abspath(inspect.stack()[1][1])
-        if module == '__main__':
-            module = os.path.splitext(os.path.split(call_file)[1])[0]
-        path = os.path.split(call_file)[0]
+        # check if we can find the function file. the function might have been
+        # defined in an ipython instance
+        if not os.path.exists(call_file):
+            print('Warning: Can not find the file from which `map` was called. '
+                  'Trying to eval function source.')
+            path = os.path.abspath(temp_folder)
+            module = 'function'
+            with open(os.path.join(temp_folder, 'function.py'), 'w') as f:
+                f.write(inspect.getsource(function))
+        else:
+            module = function.__module__
+            if module == '__main__':
+                module = os.path.splitext(os.path.split(call_file)[1])[0]
+            path = os.path.split(call_file)[0]
         _write_info(temp_folder, function_name, path, module, cluster_params,
                     len(args))
 
@@ -117,20 +128,21 @@ def map(function, args, temp_folder='temp_pygrid', use_cluster=True,
             res = _submit_jobs(temp_folder, range(len(args)), cluster_params)
             if res is not True:
                 raise Exception('Could not submit job: ' + res)
-
-            if interactive:
-                _disp_progress(temp_folder)
-            else:
-                return None
         else:
             _simulate_jobs(temp_folder, range(len(args)))
 
-    return get_results(temp_folder)
+    if not use_cluster:
+        return get_results(temp_folder)
+    elif interactive:
+        _disp_progress(temp_folder)
+        return get_results(temp_folder)
+    else:
+        return None
 
 
 def restart(temp_folder, cluster_params=None):
     """ Restarts all failed jobs.
-    
+
     Parameters
     ----------
     temp_folder : string
