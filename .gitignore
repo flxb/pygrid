@@ -31,3 +31,6 @@ nosetests.xml
 
 # Mac
 *.DS_Store
+
+# Vim
+*.sw[p|n|o]
